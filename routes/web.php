@@ -15,6 +15,8 @@ use App\Http\Controllers\PostController;
 |
 */
 
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -29,7 +31,9 @@ Route::get('/posts', function () {
 
 Route::get('/dashboard', function () {
     $posts = Post::all();
-    return view('dashboard');
+    return view('dashboard', [
+        'posts' => $posts,
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -38,6 +42,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // add a post
+    Route::get('/posts', [PostController::class, 'index'])->name('posts');
+    Route::get('/posts', [PostController::class, 'post'])->name('posts');
+    Route::get('/edit-post/{id}', [PostController::class, 'edit'])->name('edit-post');
+    Route::post('/update-post/{id}', [PostController::class, 'update'])->name('update-post');
+    Route::post('/delete-post/{id}', [PostController::class, 'delete'])->name('delete-post');
     Route::post('/add-post', [PostController::class, 'add'])->name('add-post');
 });
 
